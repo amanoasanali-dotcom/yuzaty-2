@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(npm run *)",
+      "Bash(pkill -f \"vite\")",
+      "Bash(npm install *)"
+    ]
+  }
+}
