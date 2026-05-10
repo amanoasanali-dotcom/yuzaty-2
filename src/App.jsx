@@ -17,7 +17,7 @@ const hallPhotos = [
   '/assets/photos/hall5.jpg'
 ]
 
-const MAX_VOLUME = 0.175 // Reduced by 50% from 0.35
+const MAX_VOLUME = 0.0875 // Reduced by another 50% from 0.175
 
 function App() {
   const [step, setStep] = useState('intro')
@@ -253,12 +253,12 @@ function App() {
       {!isLoading && (
         <button ref={musicBtnRef} onClick={isStarted ? toggleMusic : startSite} className="fixed z-[70] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-white/5 backdrop-blur-2xl flex items-center justify-center hover:bg-white/10 shadow-2xl border border-white/10 scale-110">
           {isMuted ? (
-            <svg className="music-icon w-10 h-10 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
+            <svg className="music-icon w-12 h-12 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
             </svg>
           ) : (
-            <svg className="music-icon w-10 h-10 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
+            <svg className="music-icon w-12 h-12 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
             </svg>
           )}
@@ -270,7 +270,9 @@ function App() {
           <div className="flex flex-col w-full">
             <section className="intro-content h-screen flex flex-col items-center justify-center p-6 text-center">
               <p className="text-white/60 uppercase tracking-[0.4em] text-[10px] mb-8 animate-fadeIn font-sans">Кұрметті ағайын-туыс, бауырлар!</p>
-              <h2 className="text-white font-script text-7xl md:text-8xl mb-6 drop-shadow-2xl drop-shadow-white/20">Аделия</h2>
+              <h2 className="text-white font-script text-8xl md:text-9xl mb-6 drop-shadow-2xl drop-shadow-white/20">
+                <span className="inline-block first-letter:text-9xl">Аделия</span>
+              </h2>
               <h1 className="text-2xl md:text-3xl font-light text-white/90 tracking-widest leading-relaxed">ҚЫЗ ҰЗАТУ ТОЙЫНА<br />ШАҚЫРАМЫЗ</h1>
               <div className="mt-12 w-px h-24 bg-gradient-to-b from-white/40 to-transparent"></div>
               <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce font-sans"><div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-1 text-white/40">↓</div></div>
@@ -285,19 +287,17 @@ function App() {
 
             <section className="location-section py-12 px-8 flex flex-col items-center justify-center bg-black/40 backdrop-blur-md border-white/5">
               <a 
-                href="https://2gis.kz/astana/firm/70000001058555555" 
+                href="https://2gis.kz/astana/geo/70000001046438689/71.388985,51.147780" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="group flex flex-col items-center gap-4 py-8 px-12 rounded-3xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all duration-500 hover:scale-105 shadow-2xl"
               >
-                <div className="w-16 h-16 bg-[#28a117] rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(40,161,23,0.4)] group-hover:animate-bounce">
-                  <svg className="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                  </svg>
+                <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-[0_0_20px_rgba(40,161,23,0.4)] group-hover:animate-bounce">
+                  <img src="/assets/2gis.webp" alt="2GIS" className="w-full h-full object-cover" />
                 </div>
                 <div className="text-center">
                   <span className="block text-white/40 text-[10px] uppercase tracking-[0.3em] mb-1 font-sans">Локация</span>
-                  <span className="block text-white text-xl font-bold tracking-widest">2ГИС ПЕН АШУ</span>
+                  <span className="block text-white text-xl font-bold tracking-widest uppercase">2ГИС ПЕН АШУ</span>
                 </div>
               </a>
             </section>
@@ -326,7 +326,7 @@ function App() {
                 </div>
               </div>
               <div className="mt-12 text-center border-t border-white/10 pt-8 w-full">
-                <p className="text-white/60 tracking-widest text-sm font-light">САҒАТ 19:00 - ДЕ БАСТАЛАДЫ</p>
+                <p className="text-white/60 tracking-widest text-sm font-light uppercase text-center">САҒАТ 19:00 - ДЕ БАСТАЛАДЫ</p>
               </div>
             </section>
 
@@ -390,7 +390,7 @@ function App() {
             </section>
 
             <section className="countdown-section py-24 px-8 bg-black flex flex-col items-center">
-              <h2 className="text-white/60 text-sm uppercase tracking-[0.3em] mb-10 font-sans">Тойға дейін қалды:</h2>
+              <h2 className="text-white/60 text-sm uppercase tracking-[0.3em] mb-10 font-sans text-center">Тойға дейін қалды:</h2>
               <div className="flex gap-4 font-sans">
                 {Object.entries(timeLeft).map(([unit, value]) => (
                   <div key={unit} className="flex flex-col items-center min-w-[70px]">
@@ -399,7 +399,7 @@ function App() {
                   </div>
                 ))}
               </div>
-              <p className="mt-16 text-white/30 text-[10px] uppercase tracking-widest font-sans tracking-[0.5em]">Кездескенше асыға күтеміз!</p>
+              <p className="mt-16 text-white/30 text-[10px] uppercase tracking-widest font-sans tracking-[0.5em] text-center">Кездескенше асыға күтеміз!</p>
             </section>
           </div>
         )}
