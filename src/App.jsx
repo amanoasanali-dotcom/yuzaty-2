@@ -64,16 +64,22 @@ function App() {
     return () => clearInterval(interval)
   }, [])
 
-  // Initialize Audio and Listen for readiness
+  // Initialize Audio
   useEffect(() => {
     const audio = new Audio('/assets/music.m4a')
     audio.loop = true
     audio.volume = 0
     audioRef.current = audio
+
     const checkAudioReady = () => setReadyStates(prev => ({ ...prev, audio: true }))
     audio.addEventListener('canplaythrough', checkAudioReady)
+    
+    // Fail-safe: if audio doesn't load in 4s, proceed anyway
+    const timer = setTimeout(() => setReadyStates(prev => ({ ...prev, audio: true })), 4000)
+
     return () => {
       audio.removeEventListener('canplaythrough', checkAudioReady)
+      clearTimeout(timer)
       if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
     }
   }, [])
@@ -83,24 +89,29 @@ function App() {
     const video = videoRef.current
     if (!video) return
     const checkVideoReady = () => setReadyStates(prev => ({ ...prev, video: true }))
-    if (video.readyState >= 4) {
+    
+    // Fail-safe: if video doesn't load in 4s, proceed anyway
+    const timer = setTimeout(() => setReadyStates(prev => ({ ...prev, video: true })), 4000)
+
+    if (video.readyState >= 3) {
       checkVideoReady()
     } else {
       video.addEventListener('canplaythrough', checkVideoReady)
     }
-    return () => video.removeEventListener('canplaythrough', checkVideoReady)
+    return () => {
+      video.removeEventListener('canplaythrough', checkVideoReady)
+      clearTimeout(timer)
+    }
   }, [])
 
-  // Remove loader when both are ready
+  // Remove loader when both are ready (or timed out)
   useEffect(() => {
     if (readyStates.video && readyStates.audio) {
-      setTimeout(() => {
-        gsap.to('.loader-screen', {
-          opacity: 0,
-          duration: 1,
-          onComplete: () => setIsLoading(false)
-        })
-      }, 500)
+      gsap.to('.loader-screen', {
+        opacity: 0,
+        duration: 0.8,
+        onComplete: () => setIsLoading(false)
+      })
     }
   }, [readyStates])
 
@@ -108,15 +119,23 @@ function App() {
     if (!audioRef.current || isStarted) return
     setIsStarted(true)
     setIsMuted(false)
-    audioRef.current.play()
-    if (videoRef.current) { videoRef.current.play(); }
+    
+    // Force play both
+    audioRef.current.play().catch(() => {})
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {})
+    }
+
     gsap.to(audioRef.current, { volume: MAX_VOLUME, duration: 3, ease: 'power1.inOut' })
+    
     const isMobile = window.innerWidth <= 500
     const targetRight = isMobile ? 24 : (window.innerWidth / 2) - 250 + 24
     const targetX = (window.innerWidth / 2) - targetRight - 24
     const targetY = (window.innerHeight / 2) - 32 - 24
+    
     gsap.to(musicBtnRef.current, { x: targetX, y: -targetY, width: '48px', height: '48px', scale: 1, duration: 1.5, ease: 'expo.inOut' })
     gsap.to('.music-icon', { width: '20px', height: '20px', duration: 1.5, ease: 'expo.inOut' })
+    
     gsap.to(revealRef.current, {
       radius: 150, duration: 2.2, ease: 'power2.inOut',
       onUpdate: () => {
@@ -210,45 +229,49 @@ function App() {
   const handleVideoEnd = () => { setCurrentVideoIndex((prevIndex) => (prevIndex + 1) % videos.length) }
 
   return (
-    <div className="min-h-screen bg-black flex justify-center">
+    <div className="min-h-screen bg-[#0a0a0a] flex justify-center">
       {isLoading && (
-        <div className="loader-screen fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center">
-          <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin mb-6"></div>
-          <p className="text-white/60 text-[10px] uppercase tracking-[0.4em] animate-pulse">Жүктелуде...</p>
+        <div className="loader-screen fixed inset-0 z-[100] bg-[#0a0a0a] flex flex-col items-center justify-center">
+          <div className="w-10 h-10 border-2 border-white/10 border-t-white/80 rounded-full animate-spin mb-6"></div>
+          <p className="text-white/40 text-[9px] uppercase tracking-[0.5em] animate-pulse">Жүктелуде</p>
         </div>
       )}
+      
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none flex justify-center">
-        <div className="relative w-full max-w-[500px] h-full overflow-hidden">
+        <div className="relative w-full max-w-[500px] h-full overflow-hidden bg-[#0a0a0a]">
           <video ref={videoRef} key={videos[currentVideoIndex]} autoPlay muted playsInline preload="auto" onEnded={handleVideoEnd} className="absolute min-w-full min-h-full object-cover opacity-60 scale-105">
             <source src={videos[currentVideoIndex]} type="video/mp4" />
           </video>
           {[...Array(15)].map((_, i) => (
-            <div key={i} ref={el => petalsRef.current[i] = el} className="absolute -top-10 w-2 h-2 bg-white/20 rounded-full blur-[1px] pointer-events-none" style={{ left: `${Math.random() * 100}%` }} />
+            <div key={i} ref={el => petalsRef.current[i] = el} className="absolute -top-10 w-1.5 h-1.5 bg-white/20 rounded-full blur-[1px] pointer-events-none" style={{ left: `${Math.random() * 100}%` }} />
           ))}
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60"></div>
         </div>
       </div>
+
       {!isStarted && (
         <div ref={overlayRef} className="fixed inset-0 z-[60] flex flex-col items-center justify-center backdrop-blur-3xl bg-black/60" />
       )}
+
       {!isLoading && (
         <button
           ref={musicBtnRef}
           onClick={isStarted ? toggleMusic : startSite}
-          className="fixed z-[70] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-white/10 backdrop-blur-2xl flex items-center justify-center hover:bg-white/20 shadow-2xl border border-white/20 scale-110"
+          className="fixed z-[70] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-white/5 backdrop-blur-2xl flex items-center justify-center hover:bg-white/10 shadow-2xl border border-white/10 scale-110"
         >
           {isMuted ? (
-            <svg className="music-icon w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+            <svg className="music-icon w-10 h-10 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
             </svg>
           ) : (
-            <svg className="music-icon w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+            <svg className="music-icon w-10 h-10 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
             </svg>
           )}
         </button>
       )}
+
       <div ref={mainRef} className={`relative w-full max-w-[500px] z-10 bg-transparent no-scrollbar overflow-x-hidden ${!isStarted ? 'h-screen overflow-hidden' : ''}`}>
         {isStarted && (
           <>
