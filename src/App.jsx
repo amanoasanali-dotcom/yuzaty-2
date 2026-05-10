@@ -17,7 +17,7 @@ const hallPhotos = [
   '/assets/photos/hall5.jpg'
 ]
 
-const MAX_VOLUME = 0.0875 // Reduced by another 50% from 0.175
+const MAX_VOLUME = 0.043 // Reduced by another 50% from 0.0875
 
 function App() {
   const [step, setStep] = useState('intro')
@@ -63,7 +63,7 @@ function App() {
     return () => clearInterval(interval)
   }, [])
 
-  // Initialize Audio and Listen for readiness
+  // Initialize Audio
   useEffect(() => {
     const audio = new Audio('/assets/music.m4a')
     audio.loop = true
@@ -150,24 +150,18 @@ function App() {
 
   useEffect(() => {
     if (!isStarted) return
-    const sections = ['.hall-section', '.calendar-section', '.location-section', '.rsvp-section', '.countdown-section']
-    sections.forEach(sec => {
-      gsap.fromTo(sec, { opacity: 0, y: 100 }, {
-        opacity: 1, y: 0, duration: 1.2,
-        scrollTrigger: {
-          trigger: sec,
-          start: 'top 80%',
-          toggleActions: 'play none none reverse'
-        }
-      })
-    })
+    
+    // Static sections (removed ScrollTrigger for these)
+    gsap.set(['.hall-section', '.calendar-section', '.location-section', '.countdown-section'], { opacity: 1, y: 0 })
 
-    const photoItems = document.querySelectorAll('.hall-photo-item')
-    photoItems.forEach((photo) => {
-      gsap.fromTo(photo, { opacity: 0, scale: 0.8, y: 50 }, {
-        opacity: 1, scale: 1, y: 0,
-        scrollTrigger: { trigger: photo, start: 'top 85%', end: 'bottom 15%', toggleActions: 'play reverse play reverse' }
-      })
+    // Keep animation for RSVP section only
+    gsap.fromTo('.rsvp-section-content', { opacity: 0, y: 100 }, {
+      opacity: 1, y: 0, duration: 1,
+      scrollTrigger: {
+        trigger: '.rsvp-section',
+        start: 'top 60%',
+        toggleActions: 'play none none reverse'
+      }
     })
   }, [isStarted])
 
@@ -270,8 +264,8 @@ function App() {
           <div className="flex flex-col w-full">
             <section className="intro-content h-screen flex flex-col items-center justify-center p-6 text-center">
               <p className="text-white/60 uppercase tracking-[0.4em] text-[10px] mb-8 animate-fadeIn font-sans">Кұрметті ағайын-туыс, бауырлар!</p>
-              <h2 className="text-white font-script text-8xl md:text-9xl mb-6 drop-shadow-2xl drop-shadow-white/20">
-                <span className="inline-block first-letter:text-9xl">Аделия</span>
+              <h2 className="text-white font-['Alex_Brush'] text-8xl md:text-9xl mb-6 drop-shadow-2xl drop-shadow-white/20">
+                Аделия
               </h2>
               <h1 className="text-2xl md:text-3xl font-light text-white/90 tracking-widest leading-relaxed">ҚЫЗ ҰЗАТУ ТОЙЫНА<br />ШАҚЫРАМЫЗ</h1>
               <div className="mt-12 w-px h-24 bg-gradient-to-b from-white/40 to-transparent"></div>
@@ -303,7 +297,7 @@ function App() {
             </section>
 
             <section className="calendar-section py-24 px-8 flex flex-col items-center justify-center bg-black/40 backdrop-blur-md border-y border-white/5">
-              <h3 className="font-script text-5xl text-white mb-10">Той салтанаты:</h3>
+              <h3 className="font-['Great_Vibes'] text-5xl text-white mb-10">Той салтанаты:</h3>
               <div className="text-center mb-10">
                 <p className="text-2xl text-white tracking-[0.2em] font-light">1 ТАМЫЗ 2026 ЖЫЛ</p>
               </div>
