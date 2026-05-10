@@ -68,3 +68,11 @@ canvas {
   animation: fadeIn 0.8s ease-out;
 }
 
+.font-script {
+  font-family: 'Great Vibes', cursive;
+}
+
+.font-serif-elegant {
+  font-family: 'Cormorant Garamond', serif;
+}
+
