@@ -5,7 +5,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 const videos = [
-  '/assets/videos/video1.mp4',
   '/assets/videos/video2.mp4'
 ]
 
@@ -17,7 +16,7 @@ const hallPhotos = [
   '/assets/photos/hall5.jpg'
 ]
 
-const MAX_VOLUME = 0.043 // Reduced by another 50% from 0.0875
+const MAX_VOLUME = 0.0086 // Reduced by another 80% from 0.043
 
 function App() {
   const [step, setStep] = useState('intro')
@@ -230,7 +229,17 @@ function App() {
       
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none flex justify-center">
         <div className="relative w-full max-w-[500px] h-full overflow-hidden bg-[#0a0a0a]">
-          <video ref={videoRef} key={videos[currentVideoIndex]} autoPlay muted playsInline preload="auto" onEnded={handleVideoEnd} className="absolute min-w-full min-h-full object-cover opacity-60 scale-105">
+          <video 
+            ref={videoRef} 
+            key={videos[currentVideoIndex]} 
+            autoPlay 
+            muted 
+            playsInline 
+            loop
+            preload="auto"
+            onEnded={handleVideoEnd} 
+            className="absolute min-w-full min-h-full object-cover opacity-60 scale-105"
+          >
             <source src={videos[currentVideoIndex]} type="video/mp4" />
           </video>
           {[...Array(15)].map((_, i) => (
