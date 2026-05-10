@@ -6,8 +6,7 @@ gsap.registerPlugin(ScrollTrigger)
 
 const videos = [
   '/assets/videos/video1.mp4',
-  '/assets/videos/video2.mp4',
-  '/assets/videos/video3.mp4'
+  '/assets/videos/video2.mp4'
 ]
 
 const hallPhotos = [
@@ -18,7 +17,7 @@ const hallPhotos = [
   '/assets/photos/hall5.jpg'
 ]
 
-const MAX_VOLUME = 0.35
+const MAX_VOLUME = 0.175 // Reduced by 50% from 0.35
 
 function App() {
   const [step, setStep] = useState('intro')
@@ -64,7 +63,7 @@ function App() {
     return () => clearInterval(interval)
   }, [])
 
-  // Initialize Audio
+  // Initialize Audio and Listen for readiness
   useEffect(() => {
     const audio = new Audio('/assets/music.m4a')
     audio.loop = true
@@ -80,7 +79,7 @@ function App() {
     }
   }, [])
 
-  // Video readiness
+  // Listen for video readiness
   useEffect(() => {
     const video = videoRef.current
     if (!video) return
@@ -97,7 +96,7 @@ function App() {
     }
   }, [])
 
-  // Remove loader
+  // Remove loader when both are ready (or timed out)
   useEffect(() => {
     if (readyStates.video && readyStates.audio) {
       gsap.to('.loader-screen', {
@@ -113,14 +112,20 @@ function App() {
     setIsStarted(true)
     setIsMuted(false)
     audioRef.current.play().catch(() => {})
-    if (videoRef.current) { videoRef.current.play().catch(() => {}); }
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {})
+    }
+
     gsap.to(audioRef.current, { volume: MAX_VOLUME, duration: 3, ease: 'power1.inOut' })
+    
     const isMobile = window.innerWidth <= 500
     const targetRight = isMobile ? 24 : (window.innerWidth / 2) - 250 + 24
     const targetX = (window.innerWidth / 2) - targetRight - 24
     const targetY = (window.innerHeight / 2) - 32 - 24
+    
     gsap.to(musicBtnRef.current, { x: targetX, y: -targetY, width: '48px', height: '48px', scale: 1, duration: 1.5, ease: 'expo.inOut' })
     gsap.to('.music-icon', { width: '20px', height: '20px', duration: 1.5, ease: 'expo.inOut' })
+    
     gsap.to(revealRef.current, {
       radius: 150, duration: 2.2, ease: 'power2.inOut',
       onUpdate: () => {
@@ -145,9 +150,7 @@ function App() {
 
   useEffect(() => {
     if (!isStarted) return
-    
-    // Animate all sections
-    const sections = ['.hall-section', '.calendar-section', '.rsvp-section', '.countdown-section']
+    const sections = ['.hall-section', '.calendar-section', '.location-section', '.rsvp-section', '.countdown-section']
     sections.forEach(sec => {
       gsap.fromTo(sec, { opacity: 0, y: 100 }, {
         opacity: 1, y: 0, duration: 1.2,
@@ -159,17 +162,11 @@ function App() {
       })
     })
 
-    // Gallery photos
     const photoItems = document.querySelectorAll('.hall-photo-item')
     photoItems.forEach((photo) => {
       gsap.fromTo(photo, { opacity: 0, scale: 0.8, y: 50 }, {
         opacity: 1, scale: 1, y: 0,
-        scrollTrigger: {
-          trigger: photo,
-          start: 'top 85%',
-          end: 'bottom 15%',
-          toggleActions: 'play reverse play reverse'
-        }
+        scrollTrigger: { trigger: photo, start: 'top 85%', end: 'bottom 15%', toggleActions: 'play reverse play reverse' }
       })
     })
   }, [isStarted])
@@ -225,7 +222,6 @@ function App() {
 
   const handleVideoEnd = () => { setCurrentVideoIndex((prevIndex) => (prevIndex + 1) % videos.length) }
 
-  // Calendar render data (August 2026)
   const days = Array.from({ length: 31 }, (_, i) => i + 1)
   const weekdays = ['ДС', 'СС', 'СР', 'БС', 'ЖМ', 'СБ', 'ЖБ']
 
@@ -257,12 +253,12 @@ function App() {
       {!isLoading && (
         <button ref={musicBtnRef} onClick={isStarted ? toggleMusic : startSite} className="fixed z-[70] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-white/5 backdrop-blur-2xl flex items-center justify-center hover:bg-white/10 shadow-2xl border border-white/10 scale-110">
           {isMuted ? (
-            <svg className="music-icon w-12 h-12 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
+            <svg className="music-icon w-10 h-10 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
             </svg>
           ) : (
-            <svg className="music-icon w-12 h-12 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
+            <svg className="music-icon w-10 h-10 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
             </svg>
           )}
@@ -280,11 +276,30 @@ function App() {
               <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce font-sans"><div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-1 text-white/40">↓</div></div>
             </section>
 
-            <section className="hall-section py-20 px-6 flex flex-col gap-12 bg-gradient-to-b from-transparent via-black/80 to-black/40 backdrop-blur-sm">
-              <h2 className="text-white text-3xl font-bold text-center drop-shadow-lg uppercase tracking-widest">Fiesta Hall</h2>
+            <section className="hall-section py-20 px-6 flex flex-col gap-12 bg-gradient-to-b from-transparent via-black/80 to-black/40 backdrop-blur-sm text-center">
+              <h2 className="text-white text-3xl font-bold drop-shadow-lg uppercase tracking-widest">Fiesta Hall</h2>
               {hallPhotos.map((photo, i) => (
                 <div key={i} className="hall-photo-item w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border border-white/10"><img src={photo} alt={`Hall ${i + 1}`} className="w-full h-full object-cover" /></div>
               ))}
+            </section>
+
+            <section className="location-section py-12 px-8 flex flex-col items-center justify-center bg-black/40 backdrop-blur-md border-white/5">
+              <a 
+                href="https://2gis.kz/astana/firm/70000001058555555" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="group flex flex-col items-center gap-4 py-8 px-12 rounded-3xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all duration-500 hover:scale-105 shadow-2xl"
+              >
+                <div className="w-16 h-16 bg-[#28a117] rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(40,161,23,0.4)] group-hover:animate-bounce">
+                  <svg className="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                  </svg>
+                </div>
+                <div className="text-center">
+                  <span className="block text-white/40 text-[10px] uppercase tracking-[0.3em] mb-1 font-sans">Локация</span>
+                  <span className="block text-white text-xl font-bold tracking-widest">2ГИС ПЕН АШУ</span>
+                </div>
+              </a>
             </section>
 
             <section className="calendar-section py-24 px-8 flex flex-col items-center justify-center bg-black/40 backdrop-blur-md border-y border-white/5">
@@ -297,7 +312,6 @@ function App() {
                   {weekdays.map(d => <div key={d} className="text-center text-[10px] text-white/40 font-sans font-bold">{d}</div>)}
                 </div>
                 <div className="grid grid-cols-7 gap-y-4">
-                  {/* Empty spaces for start of month (August 2026 starts on Saturday) */}
                   {[...Array(5)].map((_, i) => <div key={`empty-${i}`} />)}
                   {days.map(d => (
                     <div key={d} className="relative flex items-center justify-center aspect-square">
@@ -322,7 +336,7 @@ function App() {
                 {step === 'intro' && (
                   <div className="text-center animate-fadeIn flex flex-col items-center gap-12">
                     <button onClick={() => setStep('name')} className="group relative px-12 py-4 overflow-hidden rounded-full border-2 border-white transition-all duration-500 hover:scale-105 active:scale-95 shadow-2xl">
-                      <span className="relative z-10 text-white text-lg font-bold uppercase tracking-widest transition-colors duration-500 group-hover:text-black">Тойға жауап беру</span>
+                      <span className="relative z-10 text-white text-lg font-bold uppercase tracking-widest transition-colors duration-500 group-hover:text-black font-sans">Тойға жауап беру</span>
                       <div className="absolute inset-0 z-0 bg-white translate-y-full transition-transform duration-500 group-hover:translate-y-0" />
                     </button>
                   </div>
@@ -335,11 +349,11 @@ function App() {
                   </form>
                 )}
                 {step === 'attendance' && (
-                  <div className="attendance-selector text-center w-full">
+                  <div className="attendance-selector text-center w-full font-sans">
                     <h2 className="text-2xl font-bold text-white mb-10 drop-shadow-lg">Тойға келесіз бе?</h2>
                     <div className="flex flex-col gap-4">
-                      <button onClick={() => handleAttendanceSubmit('yes')} className="w-full py-5 bg-white/10 backdrop-blur-md rounded-2xl border border-white/30 text-white text-xl font-medium hover:bg-white/20 font-sans">Әрине, келемін!</button>
-                      <button onClick={() => handleAttendanceSubmit('no')} className="w-full py-5 bg-white/10 backdrop-blur-md rounded-2xl border border-white/30 text-white text-xl font-medium hover:bg-white/20 font-sans">Өкінішке орай, келе алмаймын</button>
+                      <button onClick={() => handleAttendanceSubmit('yes')} className="w-full py-5 bg-white/10 backdrop-blur-md rounded-2xl border border-white/30 text-white text-xl font-medium hover:bg-white/20">Әрине, келемін!</button>
+                      <button onClick={() => handleAttendanceSubmit('no')} className="w-full py-5 bg-white/10 backdrop-blur-md rounded-2xl border border-white/30 text-white text-xl font-medium hover:bg-white/20">Өкінішке орай, келе алмаймын</button>
                     </div>
                   </div>
                 )}
