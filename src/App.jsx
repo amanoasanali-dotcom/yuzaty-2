@@ -16,7 +16,7 @@ const hallPhotos = [
   '/assets/photos/hall5.jpg'
 ]
 
-const MAX_VOLUME = 0.0086 // Reduced by another 80% from 0.043
+const MAX_VOLUME = 0.04 // Set to exactly 4% as requested
 
 function App() {
   const [step, setStep] = useState('intro')
