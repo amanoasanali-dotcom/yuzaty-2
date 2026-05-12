@@ -16,12 +16,11 @@ const hallPhotos = [
   '/assets/photos/hall5.jpg'
 ]
 
-const MAX_VOLUME = 0.04 // Set to exactly 4% as requested
+const MAX_VOLUME = 0.024 // Reduced by 40% from 0.04
 
 function App() {
   const [step, setStep] = useState('intro')
   const [name, setName] = useState('')
-  const [guestCount, setGuestCount] = useState('')
   const [attendance, setAttendance] = useState('')
   const [withSpouse, setWithSpouse] = useState('')
   const [userName, setUserName] = useState('')
@@ -44,7 +43,7 @@ function App() {
 
   // Countdown Logic
   useEffect(() => {
-    const targetDate = new Date('August 1, 2026 19:00:00').getTime()
+    const targetDate = new Date('August 1, 2026 17:00:00').getTime() // Updated to 17:00
     const interval = setInterval(() => {
       const now = new Date().getTime()
       const distance = targetDate - now
@@ -78,7 +77,7 @@ function App() {
     }
   }, [])
 
-  // Listen for video readiness
+  // Video readiness
   useEffect(() => {
     const video = videoRef.current
     if (!video) return
@@ -95,7 +94,7 @@ function App() {
     }
   }, [])
 
-  // Remove loader when both are ready (or timed out)
+  // Remove loader when both are ready
   useEffect(() => {
     if (readyStates.video && readyStates.audio) {
       gsap.to('.loader-screen', {
@@ -149,11 +148,7 @@ function App() {
 
   useEffect(() => {
     if (!isStarted) return
-    
-    // Static sections (removed ScrollTrigger for these)
     gsap.set(['.hall-section', '.calendar-section', '.location-section', '.countdown-section'], { opacity: 1, y: 0 })
-
-    // Keep animation for RSVP section only
     gsap.fromTo('.rsvp-section-content', { opacity: 0, y: 100 }, {
       opacity: 1, y: 0, duration: 1,
       scrollTrigger: {
@@ -188,25 +183,20 @@ function App() {
 
   const handleAttendanceSubmit = (status) => {
     setAttendance(status)
-    if (status === 'no') { finalizeRSVP(name, 'no', 'no', '0') }
+    if (status === 'no') { finalizeRSVP(name, 'no', 'no') }
     else { gsap.to('.attendance-selector', { opacity: 0, scale: 0.8, duration: 0.8, onComplete: () => setStep('spouse') }) }
   }
 
   const handleSpouseSubmit = (choice) => {
     setWithSpouse(choice)
-    gsap.to('.spouse-selector', { opacity: 0, scale: 0.8, duration: 0.8, onComplete: () => setStep('guests') })
+    finalizeRSVP(name, attendance, choice)
   }
 
-  const handleGuestSubmit = (count) => {
-    setGuestCount(count)
-    finalizeRSVP(name, attendance, withSpouse, count)
-  }
-
-  const finalizeRSVP = async (name, att, spouse, count) => {
+  const finalizeRSVP = async (name, att, spouse) => {
     setSubmitCount(prev => prev + 1)
     const token = '8702257119:AAEDlbzQ46yFtnpi_qrC72JFmIoWr0fO09Q'
     const chatId = '-5076655439'
-    const message = `🆕 *Жаңа жауап:*\n👤 *Есімі:* ${name}\n✅ *Келе ме?:* ${att === 'yes' ? 'Иә, келеді' : 'Жоқ, келе алмайды'}\n💑 *Жұбайымен:* ${spouse === 'yes' ? 'Иә' : 'Жоқ'}\n👥 *Қонақ саны:* ${count}`.trim()
+    const message = `🆕 *Жаңа жауап:*\n👤 *Есімі:* ${name}\n✅ *Келе ме?:* ${att === 'yes' ? 'Иә, келеді' : 'Жоқ, келе алмайды'}\n💑 *Жұбайымен:* ${spouse === 'yes' ? 'Иә' : 'Жоқ'}`.trim()
     try {
       await fetch(`https://api.telegram.org/bot${token}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'Markdown' }) })
     } catch (err) { console.error("Telegram Error:", err) }
@@ -235,17 +225,17 @@ function App() {
             autoPlay 
             muted 
             playsInline 
-            loop
-            preload="auto"
+            loop 
+            preload="auto" 
             onEnded={handleVideoEnd} 
-            className="absolute min-w-full min-h-full object-cover opacity-60 scale-105"
+            className="absolute min-w-full min-h-full object-cover opacity-80 scale-105 blur-[8px]"
           >
             <source src={videos[currentVideoIndex]} type="video/mp4" />
           </video>
           {[...Array(15)].map((_, i) => (
             <div key={i} ref={el => petalsRef.current[i] = el} className="absolute -top-10 w-1.5 h-1.5 bg-white/20 rounded-full blur-[1px] pointer-events-none" style={{ left: `${Math.random() * 100}%` }} />
           ))}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60"></div>
+          <div className="absolute inset-0 bg-black/30"></div>
         </div>
       </div>
 
@@ -273,15 +263,13 @@ function App() {
           <div className="flex flex-col w-full">
             <section className="intro-content h-screen flex flex-col items-center justify-center p-6 text-center">
               <p className="text-white/60 uppercase tracking-[0.4em] text-[10px] mb-8 animate-fadeIn font-sans">Кұрметті ағайын-туыс, бауырлар!</p>
-              <h2 className="text-white font-['Marck_Script'] text-7xl md:text-9xl mb-6 drop-shadow-2xl drop-shadow-white/20">
-                Аделия
-              </h2>
+              <h2 className="text-white font-['Marck_Script'] text-8xl md:text-9xl mb-6 drop-shadow-2xl drop-shadow-white/20">Аделия</h2>
               <h1 className="text-2xl md:text-3xl font-light text-white/90 tracking-widest leading-relaxed">ҚЫЗ ҰЗАТУ ТОЙЫНА<br />ШАҚЫРАМЫЗ</h1>
               <div className="mt-12 w-px h-24 bg-gradient-to-b from-white/40 to-transparent"></div>
               <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce font-sans"><div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-1 text-white/40">↓</div></div>
             </section>
 
-            <section className="hall-section py-20 px-6 flex flex-col gap-12 bg-gradient-to-b from-transparent via-black/80 to-black/40 backdrop-blur-sm text-center">
+            <section className="hall-section py-20 px-6 flex flex-col gap-12 bg-black/20 backdrop-blur-sm text-center">
               <h2 className="text-white text-3xl font-bold drop-shadow-lg uppercase tracking-widest">Fiesta Hall</h2>
               {hallPhotos.map((photo, i) => (
                 <div key={i} className="hall-photo-item w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border border-white/10"><img src={photo} alt={`Hall ${i + 1}`} className="w-full h-full object-cover" /></div>
@@ -303,6 +291,7 @@ function App() {
                   <span className="block text-white text-xl font-bold tracking-widest uppercase">2ГИС ПЕН АШУ</span>
                 </div>
               </a>
+              <p className="mt-6 text-white font-medium tracking-widest text-center drop-shadow-lg">Шоссе Коргалжын, 13/9</p>
             </section>
 
             <section className="calendar-section py-24 px-8 flex flex-col items-center justify-center bg-black/40 backdrop-blur-md border-y border-white/5">
@@ -329,7 +318,7 @@ function App() {
                 </div>
               </div>
               <div className="mt-12 text-center border-t border-white/10 pt-8 w-full">
-                <p className="text-white/60 tracking-widest text-sm font-light uppercase text-center">САҒАТ 19:00 - ДЕ БАСТАЛАДЫ</p>
+                <p className="text-white/60 tracking-widest text-sm font-light uppercase text-center">САҒАТ 17:00 - ДЕ БАСТАЛАДЫ</p>
               </div>
             </section>
 
@@ -338,8 +327,8 @@ function App() {
               <div className="rsvp-section-content relative z-10 w-full flex flex-col items-center">
                 {step === 'intro' && (
                   <div className="text-center animate-fadeIn flex flex-col items-center gap-12">
-                    <button onClick={() => setStep('name')} className="group relative px-12 py-4 overflow-hidden rounded-full border-2 border-white transition-all duration-500 hover:scale-105 active:scale-95 shadow-2xl">
-                      <span className="relative z-10 text-white text-lg font-bold uppercase tracking-widest transition-colors duration-500 group-hover:text-black font-sans">Тойға жауап беру</span>
+                    <button onClick={() => setStep('name')} className="group relative px-12 py-4 overflow-hidden rounded-full border-2 border-white transition-all duration-500 hover:scale-105 active:scale-95 shadow-2xl font-sans">
+                      <span className="relative z-10 text-white text-lg font-bold uppercase tracking-widest transition-colors duration-500 group-hover:text-black">Тойға жауап беру</span>
                       <div className="absolute inset-0 z-0 bg-white translate-y-full transition-transform duration-500 group-hover:translate-y-0" />
                     </button>
                   </div>
@@ -369,23 +358,13 @@ function App() {
                     </div>
                   </div>
                 )}
-                {step === 'guests' && (
-                  <div className="guest-selector text-center w-full font-sans">
-                    <h2 className="text-2xl font-bold text-white mb-10 drop-shadow-lg">Қанша адам болып келесіздер?</h2>
-                    <div className="grid grid-cols-2 gap-4">
-                      {['1', '2', '3', '4', '5+'].map(count => (
-                        <button key={count} onClick={() => handleGuestSubmit(count)} className="py-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/30 text-white text-xl font-bold hover:bg-white/20">{count}</button>
-                      ))}
-                    </div>
-                  </div>
-                )}
                 {step === 'success' && (
                   <div className="success-message text-center">
                     <div className="mb-6"><svg className="w-20 h-20 mx-auto text-white/80 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
                     <h2 className="text-3xl font-bold text-white mb-4 drop-shadow-lg font-sans">Рахмет, {userName}!</h2>
                     <p className="text-lg text-white/80 mb-2 drop-shadow-lg font-sans">{attendance === 'yes' ? 'Жауабыңыз қабылданды, тойда кездескенше!' : 'Жауабыңыз қабылданды'}</p>
                     {submitCount < 2 && (
-                      <button onClick={() => { setStep('intro'); setName(''); setGuestCount(''); setAttendance(''); setWithSpouse(''); setUserName(''); }} className="mt-10 px-8 py-3 bg-white/10 backdrop-blur-md rounded-full text-white text-sm font-bold uppercase tracking-wider border border-white/30 hover:bg-white/20 transition-all duration-300 font-sans">Қайталау</button>
+                      <button onClick={() => { setStep('intro'); setName(''); setAttendance(''); setWithSpouse(''); setUserName(''); }} className="mt-10 px-8 py-3 bg-white/10 backdrop-blur-md rounded-full text-white text-sm font-bold uppercase tracking-wider border border-white/30 hover:bg-white/20 transition-all duration-300 font-sans">Қайталау</button>
                     )}
                   </div>
                 )}
