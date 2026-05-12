@@ -322,6 +322,19 @@ function App() {
               </div>
             </section>
 
+            <section className="invitation-text-section py-24 px-8 flex flex-col items-center justify-center bg-black/20 backdrop-blur-sm text-center">
+              <div className="max-w-[400px] flex flex-col gap-4 text-white/90 leading-relaxed tracking-[0.15em] font-light">
+                <p className="text-lg mb-2">ҚҰРМЕТТІ</p>
+                <p className="text-sm">АҒАЙЫН-ТУЫС, БАУЫРЛАР,</p>
+                <p className="text-sm">ҚҰДА-ЖЕКЖАТ, НАҒАШЫ-ЖИЕН,</p>
+                <p className="text-sm">БӨЛЕЛЕР, ҚҰРБЫ-ҚҰРДАС,</p>
+                <p className="text-sm">ДОС-ЖАРАНДАР, ӘРІПТЕСТЕР,</p>
+                <p className="text-sm">КӨРШІЛЕР!</p>
+                <div className="my-8 w-12 h-px bg-white/20 mx-auto"></div>
+                <p className="text-lg tracking-[0.3em]">СІЗ(ДЕР)ДІ</p>
+              </div>
+            </section>
+
             <section className="rsvp-section min-h-screen flex flex-col items-center justify-center p-8 relative">
               <div className="absolute inset-0 bg-black/40 backdrop-blur-md"></div>
               <div className="rsvp-section-content relative z-10 w-full flex flex-col items-center">
