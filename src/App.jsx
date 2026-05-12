@@ -331,7 +331,15 @@ function App() {
                 <p className="text-sm">ДОС-ЖАРАНДАР, ӘРІПТЕСТЕР,</p>
                 <p className="text-sm">КӨРШІЛЕР!</p>
                 <div className="my-8 w-12 h-px bg-white/20 mx-auto"></div>
-                <p className="text-lg tracking-[0.3em]">СІЗ(ДЕР)ДІ</p>
+                <p className="text-lg tracking-[0.3em] mb-8">СІЗ(ДЕР)ДІ</p>
+                <div className="flex flex-col gap-2 uppercase">
+                  <p className="text-sm">ҚЫЗЫМЫЗДЫҢ ҰЗАТУ</p>
+                  <p className="text-sm">ТОЙЫНА АРНАЛҒАН</p>
+                  <p className="text-sm">САЛТАНАТТЫ</p>
+                  <p className="text-sm">АҚ ДАСТАРХАНЫМЫЗДЫҢ</p>
+                  <p className="text-sm">ҚАДІРЛІ ҚОНАҒЫ БОЛУҒА</p>
+                  <p className="text-sm mt-4 tracking-[0.4em] font-bold">ШАҚЫРАМЫЗ!</p>
+                </div>
               </div>
             </section>
 
