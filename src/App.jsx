@@ -9,14 +9,14 @@ const videos = [
 ]
 
 const hallPhotos = [
-  '/assets/photos/hall2.jpg', // Swapped with 1
+  '/assets/photos/hall2.jpg',
   '/assets/photos/hall1.jpg',
   '/assets/photos/hall3.jpg',
   '/assets/photos/hall4.jpg',
   '/assets/photos/hall5.jpg'
 ]
 
-const MAX_VOLUME = 0.02 // Reduced by another 15% from 0.024
+const MAX_VOLUME = 0.02
 
 function App() {
   const [step, setStep] = useState('intro')
@@ -41,7 +41,6 @@ function App() {
 
   const [readyStates, setReadyStates] = useState({ video: false, audio: false })
 
-  // Countdown Logic
   useEffect(() => {
     const targetDate = new Date('August 1, 2026 17:00:00').getTime()
     const interval = setInterval(() => {
@@ -61,7 +60,6 @@ function App() {
     return () => clearInterval(interval)
   }, [])
 
-  // Initialize Audio
   useEffect(() => {
     const audio = new Audio('/assets/music.m4a')
     audio.loop = true
@@ -77,7 +75,6 @@ function App() {
     }
   }, [])
 
-  // Video readiness
   useEffect(() => {
     const video = videoRef.current
     if (!video) return
@@ -94,7 +91,6 @@ function App() {
     }
   }, [])
 
-  // Remove loader
   useEffect(() => {
     if (readyStates.video && readyStates.audio) {
       gsap.to('.loader-screen', {
@@ -110,20 +106,14 @@ function App() {
     setIsStarted(true)
     setIsMuted(false)
     audioRef.current.play().catch(() => {})
-    if (videoRef.current) {
-      videoRef.current.play().catch(() => {})
-    }
-
+    if (videoRef.current) { videoRef.current.play().catch(() => {}); }
     gsap.to(audioRef.current, { volume: MAX_VOLUME, duration: 3, ease: 'power1.inOut' })
-    
     const isMobile = window.innerWidth <= 500
     const targetRight = isMobile ? 24 : (window.innerWidth / 2) - 250 + 24
     const targetX = (window.innerWidth / 2) - targetRight - 24
     const targetY = (window.innerHeight / 2) - 32 - 24
-    
     gsap.to(musicBtnRef.current, { x: targetX, y: -targetY, width: '48px', height: '48px', scale: 1, duration: 1.5, ease: 'expo.inOut' })
     gsap.to('.music-icon', { width: '20px', height: '20px', duration: 1.5, ease: 'expo.inOut' })
-    
     gsap.to(revealRef.current, {
       radius: 150, duration: 2.2, ease: 'power2.inOut',
       onUpdate: () => {
@@ -235,7 +225,7 @@ function App() {
           {[...Array(15)].map((_, i) => (
             <div key={i} ref={el => petalsRef.current[i] = el} className="absolute -top-10 w-1.5 h-1.5 bg-white/20 rounded-full blur-[1px] pointer-events-none" style={{ left: `${Math.random() * 100}%` }} />
           ))}
-          <div className="absolute inset-0 bg-black/30"></div>
+          <div className="absolute inset-0 bg-black/40"></div>
         </div>
       </div>
 
@@ -287,14 +277,14 @@ function App() {
               <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce font-sans"><div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-1 text-white/40">↓</div></div>
             </section>
 
-            <section className="hall-section py-20 px-6 flex flex-col gap-12 bg-black/20 backdrop-blur-sm text-center">
+            <section className="hall-section py-20 px-6 flex flex-col gap-12 text-center">
               <h2 className="text-white text-3xl font-bold drop-shadow-lg uppercase tracking-widest">Fiesta Hall</h2>
               {hallPhotos.map((photo, i) => (
                 <div key={i} className="hall-photo-item w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border border-white/10"><img src={photo} alt={`Hall ${i + 1}`} className="w-full h-full object-cover" /></div>
               ))}
             </section>
 
-            <section className="location-section py-12 px-8 flex flex-col items-center justify-center bg-black/40 backdrop-blur-md border-white/5 text-center">
+            <section className="location-section py-12 px-8 flex flex-col items-center justify-center text-center">
               <a 
                 href="https://2gis.kz/astana/geo/70000001046438689/71.388985,51.147780" 
                 target="_blank" 
@@ -312,7 +302,7 @@ function App() {
               <p className="mt-6 text-white font-medium tracking-widest text-center drop-shadow-lg">Шоссе Коргалжын, 13/9</p>
             </section>
 
-            <section className="calendar-section py-24 px-8 flex flex-col items-center justify-center bg-black/40 backdrop-blur-md border-y border-white/5">
+            <section className="calendar-section py-24 px-8 flex flex-col items-center justify-center border-y border-white/5">
               <h3 className="font-['Great_Vibes'] text-5xl text-white mb-10 text-center">Той салтанаты:</h3>
               <div className="text-center mb-10">
                 <p className="text-2xl text-white tracking-[0.2em] font-light">1 ТАМЫЗ 2026 ЖЫЛ</p>
@@ -341,7 +331,6 @@ function App() {
             </section>
 
             <section className="rsvp-section min-h-screen flex flex-col items-center justify-center p-8 relative">
-              <div className="absolute inset-0 bg-black/40 backdrop-blur-md"></div>
               <div className="rsvp-section-content relative z-10 w-full flex flex-col items-center">
                 {step === 'intro' && (
                   <div className="text-center animate-fadeIn flex flex-col items-center gap-12">
@@ -353,7 +342,7 @@ function App() {
                 )}
                 {step === 'name' && (
                   <form onSubmit={handleNameSubmit} className="name-form text-center w-full">
-                    <h2 className="text-3xl font-bold text-white mb-8 drop-shadow-lg">Кімдер келеді?</h2>
+                    <h2 className="text-3xl font-bold text-white mb-8 drop-shadow-lg font-sans">Кімдер келеді?</h2>
                     <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Есімдерді жазыңыз" className="w-full px-6 py-4 text-center bg-white/10 backdrop-blur-md rounded-full border border-white/30 text-white placeholder-white/50 focus:outline-none focus:border-white focus:bg-white/20 transition-all duration-300 font-sans" autoFocus />
                     <button type="submit" className="w-full mt-8 py-4 bg-white/20 hover:bg-white/30 border border-white/40 rounded-full text-white font-bold uppercase tracking-wider transition-all duration-300 active:scale-95 shadow-lg font-sans">Жалғастыру</button>
                   </form>
