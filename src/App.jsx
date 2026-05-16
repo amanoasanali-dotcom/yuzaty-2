@@ -275,7 +275,7 @@ function App() {
               
               <div className="flex flex-col gap-2 text-base md:text-lg font-light text-white/90 tracking-[0.15em] leading-relaxed uppercase">
                 <p className="text-lg tracking-[0.3em] mb-4">СІЗДЕРДІ</p>
-                <p>ҚЫЗЫМЫЗДЫҢ QYZ UZATU</p>
+                <p>QYZ UZATU ҚЫЗЫМЫЗДЫҢ</p>
                 <p>ТОЙЫНА АРНАЛҒАН</p>
                 <p>САЛТАНАТТЫ</p>
                 <p>АҚ ДАСТАРХАНЫМЫЗДЫҢ</p>
