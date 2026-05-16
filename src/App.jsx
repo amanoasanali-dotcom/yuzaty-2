@@ -9,14 +9,14 @@ const videos = [
 ]
 
 const hallPhotos = [
+  '/assets/photos/hall2.jpg', // Swapped with 1
   '/assets/photos/hall1.jpg',
-  '/assets/photos/hall2.jpg',
   '/assets/photos/hall3.jpg',
   '/assets/photos/hall4.jpg',
   '/assets/photos/hall5.jpg'
 ]
 
-const MAX_VOLUME = 0.024 // Reduced by 40% from 0.04
+const MAX_VOLUME = 0.02 // Reduced by another 15% from 0.024
 
 function App() {
   const [step, setStep] = useState('intro')
@@ -43,7 +43,7 @@ function App() {
 
   // Countdown Logic
   useEffect(() => {
-    const targetDate = new Date('August 1, 2026 17:00:00').getTime() // Updated to 17:00
+    const targetDate = new Date('August 1, 2026 17:00:00').getTime()
     const interval = setInterval(() => {
       const now = new Date().getTime()
       const distance = targetDate - now
@@ -94,7 +94,7 @@ function App() {
     }
   }, [])
 
-  // Remove loader when both are ready
+  // Remove loader
   useEffect(() => {
     if (readyStates.video && readyStates.audio) {
       gsap.to('.loader-screen', {
@@ -142,7 +142,7 @@ function App() {
       gsap.to(petal, { y: '100vh', x: `+=${Math.random() * 100 - 50}`, rotation: 360, duration: 10 + Math.random() * 20, repeat: -1, ease: 'none', delay: -Math.random() * 20 })
     })
     if (isStarted) {
-      gsap.fromTo('.intro-content > *', { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1.5, stagger: 0.3, ease: 'power3.out', delay: 0.5 })
+      gsap.fromTo('.intro-content > *', { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1.5, stagger: 0.2, ease: 'power3.out', delay: 0.5 })
     }
   }, [isStarted])
 
@@ -261,11 +261,29 @@ function App() {
       <div ref={mainRef} className={`relative w-full max-w-[500px] z-10 bg-transparent no-scrollbar overflow-x-hidden ${!isStarted ? 'h-screen overflow-hidden' : ''}`}>
         {isStarted && (
           <div className="flex flex-col w-full">
-            <section className="intro-content h-screen flex flex-col items-center justify-center p-6 text-center">
-              <p className="text-white/60 uppercase tracking-[0.4em] text-[10px] mb-8 animate-fadeIn font-sans">Кұрметті ағайын-туыс, бауырлар!</p>
-              <h2 className="text-white font-['Marck_Script'] text-8xl md:text-9xl mb-6 drop-shadow-2xl drop-shadow-white/20">Аделия</h2>
-              <h1 className="text-2xl md:text-3xl font-light text-white/90 tracking-widest leading-relaxed">ҚЫЗ ҰЗАТУ ТОЙЫНА<br />ШАҚЫРАМЫЗ</h1>
-              <div className="mt-12 w-px h-24 bg-gradient-to-b from-white/40 to-transparent"></div>
+            <section className="intro-content min-h-screen flex flex-col items-center justify-center p-6 py-20 text-center">
+              <div className="flex flex-col gap-2 mb-10 text-white/60 uppercase tracking-[0.3em] text-[10px] font-sans">
+                <p>ҚҰРМЕТТІ</p>
+                <p>АҒАЙЫН-ТУЫС, БАУЫРЛАР,</p>
+                <p>ҚҰДА-ЖЕКЖАТ, НАҒАШЫ-ЖИЕН,</p>
+                <p>БӨЛЕЛЕР, ҚҰРБЫ-ҚҰРДАС,</p>
+                <p>ДОС-ЖАРАНДАР, ӘРІПТЕСТЕР,</p>
+                <p>КӨРШІЛЕР!</p>
+              </div>
+              
+              <h2 className="text-white font-['Marck_Script'] text-8xl md:text-9xl mb-8 drop-shadow-2xl drop-shadow-white/20">Аделия</h2>
+              
+              <div className="flex flex-col gap-2 text-xl md:text-2xl font-light text-white/90 tracking-[0.15em] leading-relaxed uppercase">
+                <p className="text-2xl tracking-[0.3em] mb-4">СІЗДЕРДІ</p>
+                <p>ҚЫЗЫМЫЗДЫҢ <span className="font-sans font-bold tracking-normal">QYZ UZATU</span></p>
+                <p>ТОЙЫНА АРНАЛҒАН</p>
+                <p>САЛТАНАТТЫ</p>
+                <p>АҚ ДАСТАРХАНЫМЫЗДЫҢ</p>
+                <p>ҚАДІРЛІ ҚОНАҒЫ БОЛУҒА</p>
+                <p className="mt-4 tracking-[0.4em] font-bold">ШАҚЫРАМЫЗ!</p>
+              </div>
+
+              <div className="mt-16 w-px h-24 bg-gradient-to-b from-white/40 to-transparent"></div>
               <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce font-sans"><div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-1 text-white/40">↓</div></div>
             </section>
 
@@ -276,7 +294,7 @@ function App() {
               ))}
             </section>
 
-            <section className="location-section py-12 px-8 flex flex-col items-center justify-center bg-black/40 backdrop-blur-md border-white/5">
+            <section className="location-section py-12 px-8 flex flex-col items-center justify-center bg-black/40 backdrop-blur-md border-white/5 text-center">
               <a 
                 href="https://2gis.kz/astana/geo/70000001046438689/71.388985,51.147780" 
                 target="_blank" 
@@ -295,13 +313,13 @@ function App() {
             </section>
 
             <section className="calendar-section py-24 px-8 flex flex-col items-center justify-center bg-black/40 backdrop-blur-md border-y border-white/5">
-              <h3 className="font-['Great_Vibes'] text-5xl text-white mb-10">Той салтанаты:</h3>
+              <h3 className="font-['Great_Vibes'] text-5xl text-white mb-10 text-center">Той салтанаты:</h3>
               <div className="text-center mb-10">
                 <p className="text-2xl text-white tracking-[0.2em] font-light">1 ТАМЫЗ 2026 ЖЫЛ</p>
               </div>
               <div className="w-full max-w-[320px]">
-                <div className="grid grid-cols-7 mb-4">
-                  {weekdays.map(d => <div key={d} className="text-center text-[10px] text-white/40 font-sans font-bold">{d}</div>)}
+                <div className="grid grid-cols-7 mb-4 text-center">
+                  {weekdays.map(d => <div key={d} className="text-[10px] text-white/40 font-sans font-bold">{d}</div>)}
                 </div>
                 <div className="grid grid-cols-7 gap-y-4">
                   {[...Array(5)].map((_, i) => <div key={`empty-${i}`} />)}
@@ -317,29 +335,8 @@ function App() {
                   ))}
                 </div>
               </div>
-              <div className="mt-12 text-center border-t border-white/10 pt-8 w-full">
+              <div className="mt-12 text-center border-t border-white/10 pt-8 w-full uppercase">
                 <p className="text-white/60 tracking-widest text-sm font-light uppercase text-center">САҒАТ 17:00 - ДЕ БАСТАЛАДЫ</p>
-              </div>
-            </section>
-
-            <section className="invitation-text-section py-24 px-8 flex flex-col items-center justify-center bg-black/20 backdrop-blur-sm text-center">
-              <div className="max-w-[400px] flex flex-col gap-4 text-white/90 leading-relaxed tracking-[0.15em] font-light">
-                <p className="text-lg mb-2">ҚҰРМЕТТІ</p>
-                <p className="text-sm">АҒАЙЫН-ТУЫС, БАУЫРЛАР,</p>
-                <p className="text-sm">ҚҰДА-ЖЕКЖАТ, НАҒАШЫ-ЖИЕН,</p>
-                <p className="text-sm">БӨЛЕЛЕР, ҚҰРБЫ-ҚҰРДАС,</p>
-                <p className="text-sm">ДОС-ЖАРАНДАР, ӘРІПТЕСТЕР,</p>
-                <p className="text-sm">КӨРШІЛЕР!</p>
-                <div className="my-8 w-12 h-px bg-white/20 mx-auto"></div>
-                <p className="text-lg tracking-[0.3em] mb-8">СІЗ(ДЕР)ДІ</p>
-                <div className="flex flex-col gap-2 uppercase">
-                  <p className="text-sm">ҚЫЗЫМЫЗДЫҢ ҰЗАТУ</p>
-                  <p className="text-sm">ТОЙЫНА АРНАЛҒАН</p>
-                  <p className="text-sm">САЛТАНАТТЫ</p>
-                  <p className="text-sm">АҚ ДАСТАРХАНЫМЫЗДЫҢ</p>
-                  <p className="text-sm">ҚАДІРЛІ ҚОНАҒЫ БОЛУҒА</p>
-                  <p className="text-sm mt-4 tracking-[0.4em] font-bold">ШАҚЫРАМЫЗ!</p>
-                </div>
               </div>
             </section>
 
@@ -392,9 +389,9 @@ function App() {
               </div>
             </section>
 
-            <section className="countdown-section py-24 px-8 bg-black flex flex-col items-center">
-              <h2 className="text-white/60 text-sm uppercase tracking-[0.3em] mb-10 font-sans text-center">Тойға дейін қалды:</h2>
-              <div className="flex gap-4 font-sans">
+            <section className="countdown-section py-24 px-8 bg-black flex flex-col items-center text-center">
+              <h2 className="text-white/60 text-sm uppercase tracking-[0.3em] mb-10 font-sans">Тойға дейін қалды:</h2>
+              <div className="flex gap-4 font-sans justify-center">
                 {Object.entries(timeLeft).map(([unit, value]) => (
                   <div key={unit} className="flex flex-col items-center min-w-[70px]">
                     <div className="text-4xl font-black text-white mb-1">{value}</div>
@@ -402,7 +399,7 @@ function App() {
                   </div>
                 ))}
               </div>
-              <p className="mt-16 text-white/30 text-[10px] uppercase tracking-widest font-sans tracking-[0.5em] text-center">Кездескенше асыға күтеміз!</p>
+              <p className="mt-16 text-white/30 text-[10px] uppercase tracking-widest font-sans tracking-[0.5em]">Кездескенше асыға күтеміз!</p>
             </section>
           </div>
         )}
