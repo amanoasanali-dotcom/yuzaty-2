@@ -21,6 +21,7 @@ const MAX_VOLUME = 0.02
 function App() {
   const [step, setStep] = useState('intro')
   const [name, setName] = useState('')
+  const [guestCount, setGuestCount] = useState('')
   const [attendance, setAttendance] = useState('')
   const [withSpouse, setWithSpouse] = useState('')
   const [userName, setUserName] = useState('')
@@ -173,20 +174,25 @@ function App() {
 
   const handleAttendanceSubmit = (status) => {
     setAttendance(status)
-    if (status === 'no') { finalizeRSVP(name, 'no', 'no') }
+    if (status === 'no') { finalizeRSVP(name, 'no', 'no', '0') }
     else { gsap.to('.attendance-selector', { opacity: 0, scale: 0.8, duration: 0.8, onComplete: () => setStep('spouse') }) }
   }
 
   const handleSpouseSubmit = (choice) => {
     setWithSpouse(choice)
-    finalizeRSVP(name, attendance, choice)
+    gsap.to('.spouse-selector', { opacity: 0, scale: 0.8, duration: 0.8, onComplete: () => setStep('guests') })
   }
 
-  const finalizeRSVP = async (name, att, spouse) => {
+  const handleGuestSubmit = (count) => {
+    setGuestCount(count)
+    finalizeRSVP(name, attendance, withSpouse, count)
+  }
+
+  const finalizeRSVP = async (name, att, spouse, count) => {
     setSubmitCount(prev => prev + 1)
     const token = '8702257119:AAEDlbzQ46yFtnpi_qrC72JFmIoWr0fO09Q'
     const chatId = '-5076655439'
-    const message = `🆕 *Жаңа жауап:*\n👤 *Есімі:* ${name}\n✅ *Келе ме?:* ${att === 'yes' ? 'Иә, келеді' : 'Жоқ, келе алмайды'}\n💑 *Жұбайымен:* ${spouse === 'yes' ? 'Иә' : 'Жоқ'}`.trim()
+    const message = `🆕 *Жаңа жауап:*\n👤 *Есімі:* ${name}\n✅ *Келе ме?:* ${att === 'yes' ? 'Иә, келеді' : 'Жоқ, келе алмайды'}\n💑 *Жұбайымен:* ${spouse === 'yes' ? 'Иә' : 'Жоқ'}\n👥 *Қонақ саны:* ${count}`.trim()
     try {
       await fetch(`https://api.telegram.org/bot${token}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'Markdown' }) })
     } catch (err) { console.error("Telegram Error:", err) }
@@ -365,13 +371,23 @@ function App() {
                     </div>
                   </div>
                 )}
+                {step === 'guests' && (
+                  <div className="guest-selector text-center w-full font-sans">
+                    <h2 className="text-2xl font-bold text-white mb-10 drop-shadow-lg">Қанша адам болып келесіздер?</h2>
+                    <div className="grid grid-cols-2 gap-4">
+                      {['1', '2', '3', '4', '5+'].map(count => (
+                        <button key={count} onClick={() => handleGuestSubmit(count)} className="py-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/30 text-white text-xl font-bold hover:bg-white/20">{count}</button>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 {step === 'success' && (
                   <div className="success-message text-center">
                     <div className="mb-6"><svg className="w-20 h-20 mx-auto text-white/80 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
                     <h2 className="text-3xl font-bold text-white mb-4 drop-shadow-lg font-sans">Рахмет, {userName}!</h2>
                     <p className="text-lg text-white/80 mb-2 drop-shadow-lg font-sans">{attendance === 'yes' ? 'Жауабыңыз қабылданды, тойда кездескенше!' : 'Жауабыңыз қабылданды'}</p>
                     {submitCount < 2 && (
-                      <button onClick={() => { setStep('intro'); setName(''); setAttendance(''); setWithSpouse(''); setUserName(''); }} className="mt-10 px-8 py-3 bg-white/10 backdrop-blur-md rounded-full text-white text-sm font-bold uppercase tracking-wider border border-white/30 hover:bg-white/20 transition-all duration-300 font-sans">Қайталау</button>
+                      <button onClick={() => { setStep('intro'); setName(''); setAttendance(''); setWithSpouse(''); setUserName(''); setGuestCount(''); }} className="mt-10 px-8 py-3 bg-white/10 backdrop-blur-md rounded-full text-white text-sm font-bold uppercase tracking-wider border border-white/30 hover:bg-white/20 transition-all duration-300 font-sans">Қайталау</button>
                     )}
                   </div>
                 )}
