@@ -262,7 +262,7 @@ function App() {
         {isStarted && (
           <div className="flex flex-col w-full">
             <section className="intro-content min-h-screen flex flex-col items-center justify-center p-6 py-20 text-center">
-              <div className="flex flex-col gap-2 mb-10 text-white/60 uppercase tracking-[0.3em] text-[12px] font-sans">
+              <div className="flex flex-col gap-2 mb-10 text-white/60 uppercase tracking-[0.3em] text-[14px] font-sans">
                 <p>ҚҰРМЕТТІ</p>
                 <p>АҒАЙЫН-ТУЫС, БАУЫРЛАР,</p>
                 <p>ҚҰДА-ЖЕКЖАТ, НАҒАШЫ-ЖИЕН,</p>
@@ -273,8 +273,8 @@ function App() {
               
               <h2 className="text-white font-['Marck_Script'] text-8xl md:text-9xl mb-8 drop-shadow-2xl drop-shadow-white/20">Аделия</h2>
               
-              <div className="flex flex-col gap-2 text-lg md:text-xl font-light text-white/90 tracking-[0.15em] leading-relaxed uppercase">
-                <p className="text-xl tracking-[0.3em] mb-4">СІЗДЕРДІ</p>
+              <div className="flex flex-col gap-2 text-base md:text-lg font-light text-white/90 tracking-[0.15em] leading-relaxed uppercase">
+                <p className="text-lg tracking-[0.3em] mb-4">СІЗДЕРДІ</p>
                 <p>ҚЫЗЫМЫЗДЫҢ QYZ UZATU</p>
                 <p>ТОЙЫНА АРНАЛҒАН</p>
                 <p>САЛТАНАТТЫ</p>
